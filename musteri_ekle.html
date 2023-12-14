@@ -14,18 +14,19 @@
     <script>
         $(document).ready(function(){
             $("#ekle").click(function(){
+                //obje json formatında
                 const yeni_musteri={
-                kullanici_adi:$("#kullanici_adi").val(),
-                sifre:$("#sifre").val(),
-                eposta:$("#eposta").val(),
-                adi:$("#adi").val(),
-                soyadi:$("#soyadi").val(),
-                tel_no:$("#tel_no").val(),
-                cinsiyet:$("#cinsiyet").val(),
-                dogum_tarihi:$("#dogum_tarihi").val()
+                    kullanici_adi:$("#kullanici_adi").val(),
+                    sifre:$("#sifre").val(),
+                    eposta:$("#eposta").val(),
+                    adi:$("#adi").val(),
+                    soyadi:$("#soyadi").val(),
+                    tel_no:$("#tel_no").val(),
+                    cinsiyet:$("#cinsiyet").val(),
+                    dogum_tarihi:$("#dogum_tarihi").val()
                 }
-                alert($("#eposta").val())
                 $.ajax({
+                    //API Endpoint
                     url:"http://localhost:3000/api/register",
                     type:'POST',
                     contentType:'application/json',
