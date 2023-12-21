@@ -24,6 +24,23 @@ class Response{
             message:"Kullanıcı Girişi Başarılı"
         })
     }
-    
+    error500(res){
+        return res.status(500).json({
+            success:false,
+            message:"Sunucuya ulaşılamıyor"
+        })
+    }
+    kayit_silme(res){
+        return res.status(200).json({
+            success:true,
+            message:"Silme İşlemi Başarılı"
+        })
+    }   
+    kayit_guncelle(res){
+        return res.status(200).json({
+            success:true,
+            message:"Güncelleme İşlemi Başarılı"
+        })
+    }   
 }
 module.exports=Response
