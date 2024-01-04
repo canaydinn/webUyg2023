@@ -24,7 +24,6 @@ const login=async(req,res)=>{
         }
     })
 }
-
 const register=async(req,res)=>{
    const kullanici_adi=req.body.kullanici_adi
    const sifre=await bcrypt.hash(req.body.sifre,10)
@@ -51,7 +50,6 @@ const register=async(req,res)=>{
     }
    })
 }
-
 const  getChartData=(req,res)=>{
         const data={
             labels:["Ocak","Şubat","Mart","Nisan","Mayıs"],
@@ -66,7 +64,7 @@ const  getChartData=(req,res)=>{
         res.json(data)
 }
 const musteri_getir=(req,res)=>{
-    dbConn.query("SELECT kullanici_adi,eposta,adi,soyadi,tel_no,cinsiyet,dogum_tarihi FROM kullanicilar",(error,result)=>{
+    dbConn.query("SELECT kullanici_adi,sifre,eposta,adi,soyadi,tel_no,cinsiyet,dogum_tarihi FROM kullanicilar",(error,result)=>{
         if(error){
             console.log("Sunucu yanıt vermiyor")
             return new Response().error500(res)
@@ -75,45 +73,40 @@ const musteri_getir=(req,res)=>{
         }
     })
 }
-const musteri_sil=(req,res)=>{
-    const eposta=req.body.eposta
-    dbConn.query("DELETE FROM kullanicilar WHERE eposta=?",eposta,(error,result)=>{
+const musteri_sil=async(req,res)=>{
+    const eposta=req.params.eposta
+    dbConn.query("DELETE FROM kullanicilar WHERE eposta=?",[eposta],(error,result)=>{
         if(error){
-            return new Response().error500(res)
+            res.send
         }else{
             return new Response().kayit_silme(res)
         }
     })
 }
-const musteri_guncelle=(req,res)=>{
-    const eposta=req.body.eposta
-    console.log(eposta)
-    dbConn.query("UPDATE kullanicilar SET kullanici_adi='aa' WHERE eposta=?",eposta,(error,result)=>{
-        if(error){
-            console.log(error)
-            return new Response().error500(res)
-        }else{
-            return new Response().kayit_silme(res)
-        }
-    })
-}
-/* const musteri_guncelle=(req,res)=>{
-    const eposta=req.body.eposta
+const musteri_guncelle=async(req,res)=>{
+    const eposta=req.params.eposta
     const kullanici_adi=req.body.kullanici_adi
+    const sifre=req.body.sifre
     const adi=req.body.adi
     const soyadi=req.body.soyadi
     const tel_no=req.body.tel_no
     const cinsiyet=req.body.cinsiyet
     const dogum_tarihi=req.body.dogum_tarihi
-    console.log(req.body.kullanici_adi)
-    dbConn.query("UPDATE kullanicilar SET kullanici_adi=? WHERE eposta='can@gmail.com'",
-    [kullanici_adi],(error,result)=>{
-        if(error){
-            return new Response().error500(res)
-        }else{
-            console.log(result)
-            return new Response("Güncelleme Başarılı").kayit_guncelle(res)
-        }
-    })
-} */
+    console.log(eposta)
+    try{
+        dbConn.query("UPDATE kullanicilar SET kullanici_adi=?,sifre=?,adi=?,soyadi=?,tel_no=?,cinsiyet=?,dogum_tarihi=? WHERE eposta=?",
+        [kullanici_adi,sifre,adi,soyadi,tel_no,cinsiyet,dogum_tarihi,eposta],(error,result)=>{
+            if(error){
+                console.log(error)
+                return new Response().error500(res)
+            }else{
+                return new Response().kayit_guncelle(res)
+                location.reload()
+            }
+        })
+    }catch(err){
+
+    }
+    
+}
 module.exports={login,register,getChartData,musteri_getir,musteri_sil,musteri_guncelle}

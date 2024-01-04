@@ -27,6 +27,7 @@
             },
             columns:[
                 {data:"kullanici_adi"},
+                {data:"sifre"},
                 {data:"eposta"},
                 {data:"adi"},
                 {data:"soyadi"},
@@ -49,18 +50,60 @@
            $("#musteriler_tablo tbody").on('click','#delete-button',function(){
             var data=table.row($(this).closest('tr')).data()
             var eposta=data.eposta
-           $.ajax({
-            url:`http://localhost:3000/api/musteri_sil/ss`,
-            type:"DELETE",
-            data:eposta,
-            success:function(data){
-                console.log(data)
-            },
-            error:function(error){
-                console.log(error)
-            }
+                $.ajax({
+                    url:`/api/musteri_sil/${eposta}`,
+                    type:"DELETE",
+                    success:function(data){
+                        console.log(data)
+                    },
+                    error:function(error){
+                        console.log(error)
+                    }
+                })
            })
+           $(".close").click(function(){
+            $("#musteriGuncelleModal").css("display","none");
+        });
+           $("#musteriler_tablo tbody").on('click','#update-button',function(){
+            var data=table.row($(this).closest('tr')).data()
+            $("#musteriGuncelleModal").css("display","block")
+            console.log(data)
+            $("#kullanici_adi_modal").val(data.kullanici_adi)
+            $("#sifre_modal").val(data.sifre)
+            $("#eposta_modal").val(data.eposta)
+            $("#adi_modal").val(data.adi)
+            $("#soyadi_modal").val(data.soyadi)
+            $("#telefon_no_modal").val(data.tel_no)
+            $("#cinsiyet_modal").val(data.cinsiyet)
+            $("#dogum_tarihi_modal").val(data.dogum_tarihi)            
            })
+          $("#musteri_guncelle_modal_button").click(function(){
+            const eposta=$("#eposta_modal").val()
+            const guncel_musteri={
+                    kullanici_adi:$("#kullanici_adi_modal").val(),
+                    sifre:$("#sifre_modal").val(),
+                    adi:$("#adi_modal").val(),
+                    soyadi:$("#soyadi_modal").val(),
+                    tel_no:$("#telefon_no_modal").val(),
+                    cinsiyet:$("#cinsiyet_modal").val(),
+                    dogum_tarihi:$("#dogum_tarihi_modal").val()
+                }
+            console.log(eposta)
+            console.log(guncel_musteri)
+            $.ajax({
+                    url:`http://localhost:3000/api/musteri_guncelle/${eposta}`,
+                    type:"PUT",
+                    contentType:"application/json",
+                    data:JSON.stringify(guncel_musteri),
+                    success:function(data){
+                        console.log(data)
+                        location.reload()
+                    },
+                    error:function(error){
+                        console.log(error)
+                    }
+                })
+          }) 
         })
     </script>
 </head>
@@ -134,6 +177,7 @@
                 <thead>
                     <tr>
                     <th>Kullanıcı Adı</th>
+                    <th>Şifre</th>
                     <th>Eposta</th>
                     <th>Adı</th>
                     <th>Soyadı</th>
@@ -150,6 +194,79 @@
             </table>
         </section>
     </div>
+    <div class="modal" tabindex="-1" role="dialog" id="musteriGuncelleModal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Müşteri Güncelle</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <!-- <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">ID</label>
+                <div class="col-sm-10">
+                    <label id="kayit_id"></label>
+                </div>
+            </div> -->
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Kullanıcı Adı</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="kullanici_adi_modal">
+                </div>
+            </div>
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Şifre</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="sifre_modal">
+                </div>
+            </div>
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Eposta</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="eposta_modal">
+                </div>
+            </div>
+          
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Adı</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="adi_modal">
+                </div>
+            </div>
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Soyadı</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="soyadi_modal">
+                </div>
+            </div>
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Telefon No</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="telefon_no_modal">
+                </div>
+            </div>
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Cinsiyet</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="cinsiyet_modal">
+                </div>
+            </div>
+            <div class="mb-3-row">
+                <label class="col-sm-2 col-form-label">Doğum Tarihi</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="dogum_tarihi_modal">
+                </div>
+            </div>
+    
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="musteri_guncelle_modal_button">Güncelle</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
     <footer class="main-footer">
         <div class="float-right d-none d-sm-block">
             <b>Versiyon 1.0</b>
